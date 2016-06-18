@@ -16,7 +16,7 @@ class Client:MQTT, MQTTDelegate {
   }
   
   func mqtt(mqtt: MQTT, didConnect host: String, port: Int) {
-    SLogInfo("MQTT client has connected to \(host):\(port)")
+    SLogInfo("MQTT client \(mqtt.clientId) has connected to \(host):\(port)")
     NSNotificationCenter.defaultCenter().postNotificationName("ConnectedNotification",
                                                               object:nil)
   }
