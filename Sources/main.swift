@@ -15,7 +15,7 @@ slogLevel = .Info // Change to .Verbose to get real chatty
 let clientId = randomAlphaNumericString(length:8)
 let client = Client(clientId:clientId)
 client.host = "broker.hivemq.com"
-client.keepAlive = 10
+client.keepAlive = 60
 
 let nc = NSNotificationCenter.defaultCenter()
 
@@ -62,12 +62,12 @@ _ = nc.addObserverForName("MessageNotification", object:nil, queue:nil){ notific
      let message  = userInfo["message" as NSString] as? MQTTMessage {
     do {
       let bytes = NSData(bytes:message.payload, length:message.payload.count)
-      let json = try NSJSONSerialization.jsonObject(with:bytes, options:[]) as? [String:Any]
-      let cid = json!["client"] as! String
-      let msg = json!["message"] as! String
-
-      if cid != clientId {
-        SLogInfo("Received \(msg) from \(cid)")
+      if let json = try NSJSONSerialization.jsonObject(with:bytes, options:[]) as? [String:Any] {
+        let cid = json["client"] as! String
+        let msg = json["message"] as! String
+        if cid != clientId {
+          SLogInfo("Received \(msg) from \(cid)")
+        }
       }
     } catch {
       SLogError("Malformed message payload")

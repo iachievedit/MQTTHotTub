@@ -34,6 +34,7 @@ class Client:MQTT, MQTTDelegate {
   }
   
   func mqtt(mqtt: MQTT, didReceiveMessage message: MQTTMessage, id: UInt16 ) {
+    SLogInfo("didReceiveMessage")
     let userInfo:[NSObject:AnyObject] = ["message" as NSString:message]
     NSNotificationCenter.defaultCenter().postNotificationName("MessageNotification",
                                                               object:nil,
