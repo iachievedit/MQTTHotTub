@@ -62,11 +62,11 @@ _ = nc.addObserverForName("MessageNotification", object:nil, queue:nil){ notific
      let message  = userInfo["message" as NSString] as? MQTTMessage {
     do {
       let bytes = NSData(bytes:message.payload, length:message.payload.count)
-      if let json = try NSJSONSerialization.jsonObject(with:bytes,
-                                                       options:.allowFragments) as? [String:AnyObject],
+      let json = try NSJSONSerialization.jsonObject(with:bytes, options:[]) as? [String:Any]
+      let cid = json!["client"] as! String
+      let msg = json!["message"] as! String
 
-         let cid = json["client"] as? String,
-         let msg = json["message"] as? String where cid != clientId {
+      if cid != clientId {
         SLogInfo("Received \(msg) from \(cid)")
       }
     } catch {
