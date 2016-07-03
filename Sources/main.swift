@@ -17,29 +17,29 @@ let client = Client(clientId:clientId)
 client.host = "broker.hivemq.com"
 client.keepAlive = 60
 
-let nc = NSNotificationCenter.defaultCenter()
+let nc = NotificationCenter.defaultCenter()
 
-var saySomething:NSTimer?
+var saySomething:Timer?
 
-_ = nc.addObserverForName("DisconnectedNotification", object:nil, queue:nil){_ in
+_ = nc.addObserverForName(DisconnectedNotification.name, object:nil, queue:nil){_ in
   SLogInfo("Connecting to broker")
 
   saySomething?.invalidate()
   if !client.connect() {
     SLogError("Unable to connect to broker.hivemq.com, retrying in 30 seconds")
     let retryInterval     = 30
-    let retryTimer        = NSTimer.scheduledTimer(NSTimeInterval(retryInterval),
+    let retryTimer        = Timer.scheduledTimer(withTimeInterval:TimeInterval(retryInterval),
                                                    repeats:false){ _ in
-      nc.postNotificationName("DisconnectedNotification", object:nil)
+      nc.postNotification(DisconnectedNotification)
     }
-    NSRunLoop.currentRunLoop().addTimer(retryTimer, forMode:NSDefaultRunLoopMode)
+    RunLoop.current().add(retryTimer, forMode:RunLoopMode.defaultRunLoopMode)
   }
 }
 
-_ = nc.addObserverForName("ConnectedNotification", object:nil, queue:nil) {_ in
+_ = nc.addObserverForName(ConnectedNotification.name, object:nil, queue:nil) {_ in
 
   let reportInterval    = 10
-  saySomething = NSTimer.scheduledTimer(NSTimeInterval(reportInterval),
+  saySomething = Timer.scheduledTimer(withTimeInterval:TimeInterval(reportInterval),
                                         repeats:true){_ in
     if client.connState == .CONNECTED {
       let message = chatMessageFor(clientId:clientId,
@@ -53,16 +53,16 @@ _ = nc.addObserverForName("ConnectedNotification", object:nil, queue:nil) {_ in
 
   _ = client.subscribe(topic:"/chat/hottub")
 
-  NSRunLoop.currentRunLoop().addTimer(saySomething!, forMode:NSDefaultRunLoopMode)
+  RunLoop.current().add(saySomething!, forMode:RunLoopMode.defaultRunLoopMode)
 
 }
 
-_ = nc.addObserverForName("MessageNotification", object:nil, queue:nil){ notification in
+_ = nc.addObserverForName(MessageNotification.name, object:nil, queue:nil){ notification in
   if let userInfo = notification.userInfo,
-     let message  = userInfo["message" as NSString] as? MQTTMessage {
+     let message  = userInfo["message"] as? MQTTMessage {
     do {
-      let bytes = NSData(bytes:message.payload, length:message.payload.count)
-      if let json = try NSJSONSerialization.jsonObject(with:bytes, options:[]) as? [String:Any] {
+      let bytes = Data(bytes:message.payload)//, length:message.payload.count)
+      if let json = try JSONSerialization.jsonObject(with:bytes, options:[]) as? [String:Any] {
         let cid = json["client"] as! String
         let msg = json["message"] as! String
         if cid != clientId {
@@ -77,9 +77,9 @@ _ = nc.addObserverForName("MessageNotification", object:nil, queue:nil){ notific
   }
 }
 
-nc.postNotificationName("DisconnectedNotification", object:nil) // Kick the connection
+nc.postNotification(DisconnectedNotification) // Kick the connection
 
-let heartbeat = NSTimer.scheduledTimer(NSTimeInterval(30), repeats:true){_ in return}
-NSRunLoop.currentRunLoop().addTimer(heartbeat, forMode:NSDefaultRunLoopMode)
-NSRunLoop.currentRunLoop().run()
+let heartbeat = Timer.scheduledTimer(withTimeInterval:TimeInterval(30), repeats:true){_ in return}
+RunLoop.current().add(heartbeat, forMode:RunLoopMode.defaultRunLoopMode)
+RunLoop.current().run()
 
