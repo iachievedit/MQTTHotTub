@@ -3,7 +3,6 @@ import JSON
 import Foundation
 
 func randomSentence() -> String {
-  srandom(UInt32(time(nil)))
   let wordCount = Int(random() % 10) + 1
   var sentence:String = ""
   for w in 1...wordCount {
@@ -24,7 +23,7 @@ func randomSentence() -> String {
 }
 
 func randomAlphaString(length: Int) -> String {
-  srandom(UInt32(time(nil)))
+
   let charactersString = "abcdefghijklmnopqrstuvwxyz"
   let charactersArray: [Character] = Array(charactersString.characters)
   

@@ -12,6 +12,8 @@ import JSON
 
 slogLevel = .Info // Change to .Verbose to get real chatty
 
+srandom(UInt32(time(nil)))
+
 let clientId = randomAlphaString(length:8)
 let client = Client(clientId:clientId)
 client.host = "broker.hivemq.com"
