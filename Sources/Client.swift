@@ -9,9 +9,12 @@ import Foundation
 import MQTT
 
 class Client:MQTT, MQTTDelegate {
-  
+
+
   init(clientId:String) {
     super.init(clientId:clientId)
+    super.willMessage =  MQTTWill(topic:"/chat/SYSTEM",
+                                  message:"{\"client\":\"\(clientId)\",\"message\":\"I'm experiencing technical difficulties.\"}")
     super.delegate = self
   }
   
@@ -33,7 +36,6 @@ class Client:MQTT, MQTTDelegate {
   }
   
   func mqtt(mqtt: MQTT, didReceiveMessage message: MQTTMessage, id: UInt16 ) {
-    SLogInfo("didReceiveMessage")
     let userInfo:[String:Any] = ["message":message]
     NotificationCenter.defaultCenter().postNotificationName(MessageNotification.name,
                                                             object:nil,
