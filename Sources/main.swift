@@ -39,7 +39,7 @@ _ = nc.addObserverForName(DisconnectedNotification.name, object:nil, queue:nil){
 }
 
 _ = nc.addObserverForName(ConnectedNotification.name, object:nil, queue:nil) {_ in
-  print("CONNECTED")
+  SLogInfo("Connected")
   
   let reportInterval    = 10
   saySomething = Timer.scheduledTimer(withTimeInterval:TimeInterval(reportInterval),
@@ -64,7 +64,7 @@ _ = nc.addObserverForName(MessageNotification.name, object:nil, queue:nil){ noti
   if let userInfo = notification.userInfo,
      let message  = userInfo["message"] as? MQTTMessage {
     do {
-      let bytes = Data(bytes:message.payload)//, length:message.payload.count)
+      let bytes = Data(bytes:message.payload)
       if let json = try JSONSerialization.jsonObject(with:bytes, options:[]) as? [String:Any] {
         let cid = json["client"] as! String
         let msg = json["message"] as! String
