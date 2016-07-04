@@ -52,7 +52,7 @@ _ = nc.addObserverForName(ConnectedNotification.name, object:nil, queue:nil) {_ 
   }
 
   _ = client.subscribe(topic:"/chat/hottub")
-//  _ = client.subscribe(topic:"/chat/SYSTEM")
+  _ = client.subscribe(topic:"/chat/SYSTEM")
 
   RunLoop.current().add(saySomething!, forMode:RunLoopMode.defaultRunLoopMode)
 
