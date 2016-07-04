@@ -10,11 +10,10 @@ import MQTT
 
 class Client:MQTT, MQTTDelegate {
 
-
   init(clientId:String) {
     super.init(clientId:clientId)
-    super.willMessage =  MQTTWill(topic:"/chat/SYSTEM",
-                                  message:"{\"client\":\"\(clientId)\",\"message\":\"I'm experiencing technical difficulties.\"}")
+    super.willMessage =  MQTTWill(topic:"/chat/hottub",
+                                  message:"{\"client\":\"\(clientId)\",\"message\":\"Abnormal Disconnect\"}")
     super.delegate = self
   }
   

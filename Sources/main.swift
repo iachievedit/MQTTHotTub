@@ -39,7 +39,8 @@ _ = nc.addObserverForName(DisconnectedNotification.name, object:nil, queue:nil){
 }
 
 _ = nc.addObserverForName(ConnectedNotification.name, object:nil, queue:nil) {_ in
-
+  print("CONNECTED")
+  
   let reportInterval    = 10
   saySomething = Timer.scheduledTimer(withTimeInterval:TimeInterval(reportInterval),
                                         repeats:true){_ in
@@ -54,7 +55,6 @@ _ = nc.addObserverForName(ConnectedNotification.name, object:nil, queue:nil) {_ 
   }
 
   _ = client.subscribe(topic:"/chat/hottub")
-  _ = client.subscribe(topic:"/chat/SYSTEM")
 
   RunLoop.current().add(saySomething!, forMode:RunLoopMode.defaultRunLoopMode)
 
