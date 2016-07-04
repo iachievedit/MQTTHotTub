@@ -24,7 +24,7 @@ func randomSentence() -> String {
 }
 
 func randomAlphaString(length: Int) -> String {
-
+  srandom(UInt32(time(nil)))
   let charactersString = "abcdefghijklmnopqrstuvwxyz"
   let charactersArray: [Character] = Array(charactersString.characters)
   
